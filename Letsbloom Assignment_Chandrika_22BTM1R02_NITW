@@ -1,1 +1,82 @@
+import requests
+import unittest
+import time
+
+class URLShortener:
+    BASE_URL = "https://example.com/api/shorten"  # Replace with the actual API endpoint
+
+    def shorten_url(self, original_url):
+        response = requests.post(self.BASE_URL, json={"url": original_url})
+        if response.status_code == 200:
+            return response.json()["short_url"]
+        else:
+            return None
+
+class TestURLShortener(unittest.TestCase):
+    def setUp(self):
+        self.shortener = URLShortener()
+
+    def test_shorten_valid_url(self):
+        original_url = "https://www.example.com"
+        short_url = self.shortener.shorten_url(original_url)
+        self.assertIsNotNone(short_url)
+
+    def test_shorten_invalid_url(self):
+        original_url = "invalid-url"
+        short_url = self.shortener.shorten_url(original_url)
+        self.assertIsNone(short_url)
+
+    def test_shorten_url_with_query_parameters(self):
+        original_url = "https://www.example.com/page?param=value"
+        short_url = self.shortener.shorten_url(original_url)
+        self.assertIsNotNone(short_url)
+
+    def test_shorten_url_with_special_characters(self):
+        original_url = "https://www.example.com/page#section"
+        short_url = self.shortener.shorten_url(original_url)
+        self.assertIsNotNone(short_url)
+
+    def test_shorten_duplicate_url(self):
+        original_url = "https://www.example.com"
+        short_url1 = self.shortener.shorten_url(original_url)
+        short_url2 = self.shortener.shorten_url(original_url)
+        self.assertNotEqual(short_url1, short_url2)
+
+    def test_shorten_expired_url(self):
+        # Assuming the service provides a way to set a short expiration time
+        original_url = "https://www.example.com"
+        short_url = self.shortener.shorten_url(original_url)
+        time.sleep(1)  # Wait for the URL to expire
+        response = requests.get(short_url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_shorten_longest_url(self):
+        original_url = "a" * 2048  # Assuming maximum URL length is 2048 characters
+        short_url = self.shortener.shorten_url(original_url)
+        self.assertIsNotNone(short_url)
+
+    def test_shorten_shortest_url(self):
+        original_url = "a"
+        short_url = self.shortener.shorten_url(original_url)
+        self.assertIsNotNone(short_url)
+
+    def test_high_traffic_scenario(self):
+        # Simulate high traffic by making a large number of requests
+        for _ in range(1000):
+            original_url = "https://www.example.com"
+            short_url = self.shortener.shorten_url(original_url)
+            self.assertIsNotNone(short_url)
+
+    def test_performance(self):
+        # Simulate performance by making a large number of requests in a short time
+        start_time = time.time()
+        for _ in range(100):
+            original_url = "https://www.example.com"
+            short_url = self.shortener.shorten_url(original_url)
+            self.assertIsNotNone(short_url)
+        elapsed_time = time.time() - start_time
+        self.assertLess(elapsed_time, 5)  # Assuming the test should run within 5 seconds
+
+if __name__ == "__main__":
+    unittest.main()
 
