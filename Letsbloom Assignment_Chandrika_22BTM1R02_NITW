@@ -3,8 +3,7 @@ import unittest
 import time
 
 class URLShortener:
-    BASE_URL = "https://example.com/api/shorten"  # Replace with the actual API endpoint
-
+    BASE_URL = "https://github.com/1pt-co/1pt"  
     def shorten_url(self, original_url):
         response = requests.post(self.BASE_URL, json={"url": original_url})
         if response.status_code == 200:
@@ -61,14 +60,14 @@ class TestURLShortener(unittest.TestCase):
         self.assertIsNotNone(short_url)
 
     def test_high_traffic_scenario(self):
-        # Simulate high traffic by making a large number of requests
+        # Simulating high traffic by making a large number of requests
         for _ in range(1000):
             original_url = "https://www.example.com"
             short_url = self.shortener.shorten_url(original_url)
             self.assertIsNotNone(short_url)
 
     def test_performance(self):
-        # Simulate performance by making a large number of requests in a short time
+        # Simulating performance by making a large number of requests in a short time
         start_time = time.time()
         for _ in range(100):
             original_url = "https://www.example.com"
@@ -79,4 +78,3 @@ class TestURLShortener(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
